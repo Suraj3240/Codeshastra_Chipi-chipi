@@ -3,21 +3,25 @@ import google.generativeai as genai
 import os
 from youtube_search import YoutubeSearch
 
-genai.configure(api_key='AIzaSyCz64ytb30euuKacOJU2ZACRPjnGQhNKck')
+# Configure GenerativeAI
+genai.configure(api_key='YOUR_API_KEY') 
 
-
+# Function to get Gemini response
 def get_gemini_response(input):
-    model=genai.GenerativeModel('gemini-pro')
-    response=model.generate_content(input)
+    # Initialize GenerativeModel
+    model = genai.GenerativeModel('gemini-pro')
+    # Generate content based on input
+    response = model.generate_content(input)
     return response.text
 
 # Function to search for YouTube videos based on a query
 def search_youtube_videos(query, max_results=9):
+    # Use YoutubeSearch library to get search results
     results = YoutubeSearch(query, max_results=max_results).to_dict()
     return results
 
 # Prompt Template for extracting key skills
-key_skills_prompt="""
+key_skills_prompt = """
 Hey! Extract key skills from the given job description. Consider the job requirements and extract the most relevant skills for the position.
 
 Job Description:
@@ -28,9 +32,9 @@ Please provide your response in a single string with the following structure:
 """
 
 # Streamlit app
-
 st.set_page_config(page_title="Page Title", layout="wide")
 
+# Custom CSS to hide some elements
 st.markdown("""
     <style>
         .reportview-container {
@@ -42,10 +46,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# App title
 st.title("Extract Key Skills from the Job Description and Recommend YouTube Videos")
 
+# Input for job description
 jd = st.text_area("Paste the Job Description")
 
+# Button to trigger the search
 submit = st.button("Get Recommended Videos")
 
 if submit:
@@ -65,7 +72,6 @@ if submit:
                 video_id = video['id']
                 thumbnail = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
                 video_link = f"https://www.youtube.com/watch?v={video_id}"
-                # st.write(f"[![{video['title']}]]({video_link})")
                 st.image(thumbnail, width=200)
                 st.markdown(f"[{video['title']}]({video_link})")
         else:
